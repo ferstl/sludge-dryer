@@ -9,25 +9,24 @@ import javassist.CannotCompileException;
 import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.CtMethod;
+import javassist.CtNewMethod;
 import javassist.NotFoundException;
 
 public class Agent {
 
 
   private static final String CACHE_ASPECT_SUPPORT = "org.springframework.cache.interceptor.CacheAspectSupport";
-  private static final String CACHE_OPERATION_CONTEXT = "org.springframework.cache.interceptor.CacheAspectSupport.CacheOperationContext";
 
-  // Implementation of generateKey() in Spring 4.1
-  private static final String GENERATE_KEY_41 =
-      "Object key = context.generateKey(result);\n"
-     + "    if (key == null) {\n"
-     + "      throw new IllegalArgumentException(\"Null key returned for cache operation (maybe you are \" +\n"
-     + "          \"using named params on classes without debug info?) \" + context.metadata.operation);\n"
-     + "    }\n"
-     + "    if (logger.isTraceEnabled()) {\n"
-     + "      logger.trace(\"Computed cache key \" + key + \" for operation \" + context.metadata.operation);\n"
-     + "    }\n"
-     + "    return key;";
+  // Alternative implementation of generateKey() (Simplified version as in Spring 4.1)
+  private static final String GENERATE_KEY_REPLACEMENT =
+      "private Object generateKey41(org.springframework.cache.interceptor.CacheAspectSupport.CacheOperationContext context, Object result) {\n"
+   +  "    Object key = context.generateKey(result);\n"
+   +  "    if (key == null) {\n"
+   +  "      throw new IllegalArgumentException(\"Null key returned for cache operation (maybe you are \" +\n"
+   +  "          \"using named params on classes without debug info?) \");\n"
+   +  "    }\n"
+   +  "    return key;\n"
+   +  "  }";
 
   private Agent() {}
 
@@ -37,6 +36,10 @@ public class Agent {
     Class<?>[] classes = Arrays.stream(inst.getAllLoadedClasses())
         .filter(c -> CACHE_ASPECT_SUPPORT.equals(c.getName()))
         .toArray(Class[]::new);
+
+    if (classes.length == 0) {
+      return;
+    }
 
     try {
       inst.retransformClasses(classes);
@@ -55,18 +58,16 @@ public class Agent {
       ClassPool classPool = ClassPool.getDefault();
       try {
         CtClass cacheAspectSupport = classPool.get(CACHE_ASPECT_SUPPORT);
-        CtMethod generateKeyMethod = cacheAspectSupport.getDeclaredMethod(
-            "generateKey",
-            new CtClass[] {
-                classPool.get(CACHE_OPERATION_CONTEXT),
-                classPool.get("java.lang.Object")});
+        CtMethod generateKeyReplacement = CtNewMethod.make(GENERATE_KEY_REPLACEMENT, cacheAspectSupport);
+        CtMethod generateKeyMethod = cacheAspectSupport.getDeclaredMethod("generateKey");
+        cacheAspectSupport.removeMethod(generateKeyMethod);
+        cacheAspectSupport.addMethod(generateKeyReplacement);
 
-        generateKeyMethod.setBody(GENERATE_KEY_41)
-        ;
         byte[] bytecode = cacheAspectSupport.toBytecode();
         cacheAspectSupport.detach();
         return bytecode;
       } catch (NotFoundException | CannotCompileException | IOException e) {
+        e.printStackTrace();
         throw new RuntimeException(e);
       }
     }
