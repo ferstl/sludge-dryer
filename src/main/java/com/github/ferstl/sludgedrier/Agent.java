@@ -19,7 +19,7 @@ public class Agent {
 
   // Alternative implementation of generateKey() (Simplified version as in Spring 4.1)
   private static final String GENERATE_KEY_REPLACEMENT =
-      "private Object generateKey41(org.springframework.cache.interceptor.CacheAspectSupport.CacheOperationContext context, Object result) {\n"
+      "private Object generateKey(org.springframework.cache.interceptor.CacheAspectSupport.CacheOperationContext context, Object result) {\n"
    +  "    Object key = context.generateKey(result);\n"
    +  "    if (key == null) {\n"
    +  "      throw new IllegalArgumentException(\"Null key returned for cache operation (maybe you are \" +\n"
