@@ -14,4 +14,5 @@ tons of garbage by string concatenation. This Java agent replaces this method's 
     
 # FAQ
 Q: Why don't you just update to Spring 4.1+ which fixes the problem?
+
 A: It's not an option at the moment but that's a whole different story...
