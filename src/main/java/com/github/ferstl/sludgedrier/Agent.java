@@ -37,6 +37,7 @@ public class Agent {
   public static void main(String... args) {
     if (args.length != 2) {
       System.err.println("Usage: java -jar /path/to/sludge-dryer.jar /path/to/sludge-dryer.jar <pid>");
+      System.exit(1);
     }
 
     String agent = args[0];
