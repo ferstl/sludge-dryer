@@ -6,11 +6,15 @@ tons of garbage by string concatenation. This Java agent replaces this method's 
 
 ## Usage
 
-    # Build
+    ## Build
     mvn clean package
     
-    # Run
+    ## Run
+    # Attach at startup    
     java -javaagent:path/to/sludge-dryer.jar MainClass
+    
+    # Attach at runtime
+    java -jar path/to/sludge-dryer.jar path/to/sludge-dryer.jar <pid>
     
 # FAQ
 Q: Why don't you just update to Spring 4.1+ which fixes the problem?
