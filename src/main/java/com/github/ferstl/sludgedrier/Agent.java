@@ -5,6 +5,10 @@ import java.lang.instrument.Instrumentation;
 import java.lang.instrument.UnmodifiableClassException;
 import java.security.ProtectionDomain;
 import java.util.Arrays;
+import com.sun.tools.attach.AgentInitializationException;
+import com.sun.tools.attach.AgentLoadException;
+import com.sun.tools.attach.AttachNotSupportedException;
+import com.sun.tools.attach.VirtualMachine;
 import javassist.CannotCompileException;
 import javassist.ClassPool;
 import javassist.CtClass;
@@ -29,6 +33,23 @@ public class Agent {
    +  "  }";
 
   private Agent() {}
+
+  public static void main(String... args) {
+    if (args.length != 2) {
+      System.err.println("Usage: java -jar /path/to/sludge-dryer.jar /path/to/sludge-dryer.jar <pid>");
+    }
+
+    String agent = args[0];
+    String pid = args[1];
+    try {
+      VirtualMachine vm = VirtualMachine.attach(pid);
+      vm.loadAgent(agent);
+      vm.detach();
+    } catch (AttachNotSupportedException | IOException | AgentLoadException | AgentInitializationException e) {
+      e.printStackTrace();
+      System.exit(1);
+    }
+  }
 
   public static void agentmain(String agentArgs, Instrumentation inst) {
     premain(agentArgs, inst);

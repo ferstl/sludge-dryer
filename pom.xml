@@ -72,6 +72,7 @@
           <configuration>
             <archive>
               <manifestEntries>
+                <Main-Class>com.github.ferstl.sludgedrier.Agent</Main-Class>
                 <Agent-Class>com.github.ferstl.sludgedrier.Agent</Agent-Class>
                 <Premain-Class>com.github.ferstl.sludgedrier.Agent</Premain-Class>
                 <Can-Retransform-Classes>true</Can-Retransform-Classes>
