@@ -1,4 +1,4 @@
-package com.github.ferstl.sludgedrier;
+package com.github.ferstl.sludgedryer;
 
 import java.io.IOException;
 import com.sun.tools.attach.AgentInitializationException;

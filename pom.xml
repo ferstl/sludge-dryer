@@ -72,9 +72,9 @@
           <configuration>
             <archive>
               <manifestEntries>
-                <Main-Class>com.github.ferstl.sludgedrier.AgentLoader</Main-Class>
-                <Agent-Class>com.github.ferstl.sludgedrier.Agent</Agent-Class>
-                <Premain-Class>com.github.ferstl.sludgedrier.Agent</Premain-Class>
+                <Main-Class>com.github.ferstl.sludgedryer.AgentLoader</Main-Class>
+                <Agent-Class>com.github.ferstl.sludgedryer.Agent</Agent-Class>
+                <Premain-Class>com.github.ferstl.sludgedryer.Agent</Premain-Class>
                 <Can-Retransform-Classes>true</Can-Retransform-Classes>
               </manifestEntries>
             </archive>

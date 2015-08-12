@@ -1,4 +1,4 @@
-package com.github.ferstl.sludgedrier;
+package com.github.ferstl.sludgedryer;
 
 import java.lang.management.ManagementFactory;
 import java.lang.reflect.Method;
